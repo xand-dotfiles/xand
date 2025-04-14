@@ -44,9 +44,5 @@ in
             xand = ./home.nix;
             graphical = ./graphical.nix;
         };
-    
-        nixosModules = {
-            xand = ./configuration.nix;
-        };
     };
 }
