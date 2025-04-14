@@ -13,6 +13,16 @@
             inputs.home-manager.follows = "home-manager";
             inputs.nixpkgs.follows = "nixpkgs";
         };
+
+        nurpkgs = {
+            url = "github:nix-community/NUR";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
+
+        rycee-firefox-addons = {
+            url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
     };
 
     outputs = {flake-parts, ...} @ inputs:

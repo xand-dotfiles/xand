@@ -4,6 +4,13 @@ let
     inherit (inputs) xmonad;
     inherit (inputs.home-manager.lib) homeManagerConfiguration;
 
+    overlays = [
+        inputs.nurpkgs.overlays.default
+        (final: prev: {
+            firefox-addons = final.nur.repos.rycee.firefox-addons;
+        })
+    ];
+
     system = "x86_64-linux";
 in
 {
@@ -13,7 +20,10 @@ in
                 modules = [
                     ./home.nix
                 ];
-                inherit pkgs;
+
+                pkgs = import inputs.nixpkgs {
+                    inherit system;
+                };
             };
     
             default = homeManagerConfiguration {
@@ -22,7 +32,11 @@ in
                     ./graphical.nix
                     xmonad.homeModules.xmonad
                 ];
-                inherit pkgs;
+
+                pkgs = import inputs.nixpkgs {
+                    config.allowUnfree = true;
+                    inherit overlays system;
+                };
             };
         });
     
