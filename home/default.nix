@@ -3,6 +3,11 @@
 let
     inherit (inputs) xmonad;
     inherit (inputs.home-manager.lib) homeManagerConfiguration;
+    
+    homeModules = {
+        xand = ./home.nix;
+        graphical = ./graphical.nix;
+    };
 
     overlays = [
         inputs.nurpkgs.overlays.default
@@ -12,37 +17,37 @@ let
     ];
 
     system = "x86_64-linux";
+
+    xand = homeManagerConfiguration {
+        modules = [
+            ./home.nix
+        ];
+
+        pkgs = import inputs.nixpkgs {
+            inherit system;
+        };
+    };
+    
+    graphical = homeManagerConfiguration {
+        modules = [
+            ./home.nix
+            ./graphical.nix
+            xmonad.homeModules.xmonad
+        ];
+
+        pkgs = import inputs.nixpkgs {
+            config.allowUnfree = true;
+            inherit overlays system;
+        };
+    };
+
+    homeConfigurations = {
+        inherit xand graphical;
+        default = graphical;
+    }
 in
 {
     flake = {
-        homeConfigurations = withSystem system ({pkgs, ...}: {
-            xand = homeManagerConfiguration {
-                modules = [
-                    ./home.nix
-                ];
-
-                pkgs = import inputs.nixpkgs {
-                    inherit system;
-                };
-            };
-    
-            default = homeManagerConfiguration {
-                modules = [
-                    ./home.nix
-                    ./graphical.nix
-                    xmonad.homeModules.xmonad
-                ];
-
-                pkgs = import inputs.nixpkgs {
-                    config.allowUnfree = true;
-                    inherit overlays system;
-                };
-            };
-        });
-    
-        homeModules = {
-            xand = ./home.nix;
-            graphical = ./graphical.nix;
-        };
+        inherit homeConfigurations homeModules;
     };
 }
