@@ -44,7 +44,7 @@ let
     homeConfigurations = {
         inherit xand graphical;
         default = graphical;
-    }
+    };
 in
 {
     flake = {
